@@ -70,8 +70,6 @@ env:
 jobs:
   adapter_build_hw:
     name: Build & CTS
-    # run only on upstream; forks won't have the HW
-    if: github.repository == 'intel/llvm'
     strategy:
       fail-fast: false
       matrix:
@@ -87,9 +85,6 @@ jobs:
         compiler: [{c: gcc, cxx: g++}]
 
     runs-on: ${{inputs.runner_name}}
-    container:
-      image: ${{ inputs.docker_image }}
-      options: ${{ inputs.image_options }}
 
     steps:
     # TODO:
@@ -97,6 +92,9 @@ jobs:
     # - switch to Ninja generator in CMake
     # - downloading DPC++ should be integrated somehow; most likely use nightly release.
     #
+    - name: test
+      run: docker exec -it ${{ inputs.docker_image }} ls -al
+
     - name: Checkout LLVM
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
